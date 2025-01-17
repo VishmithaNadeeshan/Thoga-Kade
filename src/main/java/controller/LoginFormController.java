@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import model.User;
+import org.jasypt.util.text.BasicTextEncryptor;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -26,6 +27,11 @@ public class LoginFormController {
 
     @FXML
     void btnLoginOnAction(ActionEvent event) throws SQLException, IOException {
+        String key="#12235435";
+        BasicTextEncryptor basicTextEncryptor = new BasicTextEncryptor();
+        basicTextEncryptor.setPassword(key);
+
+
         String SQL = "SELECT * FROM users WHERE email ="+"'"+txtEmail.getText()+"'";
         Connection connection = DBConnection.getInstance().getConnection();
         ResultSet resultSet = connection.createStatement().executeQuery(SQL);
@@ -35,7 +41,7 @@ public class LoginFormController {
                     resultSet.getString(3),
                     resultSet.getString(4)
             );
-            if (user.getPassword().equals(txtPassword.getText())) {
+            if (basicTextEncryptor.decrypt(user.getPassword()).equals(txtPassword.getText())) {
                 Stage stage = new Stage();
                 stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/dashboard.fxml"))));
                 stage.show();

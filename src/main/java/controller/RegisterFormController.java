@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import model.User;
+import org.jasypt.util.text.BasicTextEncryptor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,6 +31,11 @@ public class RegisterFormController {
 
     @FXML
     void btnRegisterCustomer(ActionEvent event) throws SQLException {
+        String key="#12235435";
+        BasicTextEncryptor basicTextEncryptor = new BasicTextEncryptor();
+        basicTextEncryptor.setPassword(key);
+
+
         String SQL = "INSERT INTO users (username,email,password) VALUES(?,?,?)";
 
         if (txtPassword.getText().equals(txtPassword.getText())){
@@ -50,7 +56,7 @@ public class RegisterFormController {
                 PreparedStatement psTm = connection.prepareStatement(SQL);
                 psTm.setString(1,user.getUsername());
                 psTm.setString(2,user.getEmail());
-                psTm.setString(3,user.getPassword());
+                psTm.setString(3,basicTextEncryptor.encrypt(user.getPassword()));
                 psTm.executeUpdate();
 
             }else{
