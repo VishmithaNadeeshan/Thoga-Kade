@@ -1,6 +1,8 @@
 package controller.customer;
 
 import db.DBConnection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import model.Customer;
 
 import java.sql.Connection;
@@ -15,6 +17,8 @@ public class CustomerController implements CustomerService{
         return false;
     }
 
+
+
     @Override
     public boolean updateCustomer(Customer customer) {
         return false;
@@ -22,7 +26,20 @@ public class CustomerController implements CustomerService{
 
     @Override
     public Customer viewCustomer(String id) {
-        return null;
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+            ResultSet resultSet = connection.createStatement().executeQuery("select * from customer where id=" +"'"+ id+"'");
+            resultSet.next();
+            return new Customer(
+                    resultSet.getString(1),
+                    resultSet.getString(2),
+                    resultSet.getString(3),
+                    resultSet.getDouble(4)
+            );
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -36,7 +53,7 @@ public class CustomerController implements CustomerService{
                 Customer customer = new Customer(resultSet.getString(1),
                         resultSet.getString(2),
                         resultSet.getString(3),
-                        resultSet.getString(4)
+                        resultSet.getDouble(4)
 
                 );
                 customerArrayList.add(customer);
@@ -49,6 +66,17 @@ public class CustomerController implements CustomerService{
             throw new RuntimeException(e);
         }
         return customerArrayList;
+    }
+
+    public ObservableList<String> getCustomerIDs(){
+        List<Customer> customerList = getAll();
+        ObservableList<String> customerIDList = FXCollections.observableArrayList();
+
+        customerList.forEach(customer -> {
+            customerIDList.add(customer.getId());
+
+        });
+        return customerIDList;
     }
 
     @Override
