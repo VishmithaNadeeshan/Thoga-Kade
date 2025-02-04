@@ -10,8 +10,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="476.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.OrderFormController">
+<AnchorPane prefHeight="547.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.order.OrderFormController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#0b073b" height="77.0" stroke="BLACK" strokeType="INSIDE" width="600.0" />
       <Label layoutX="202.0" layoutY="12.0" text="Order Form" textFill="WHITE">
@@ -20,7 +19,7 @@
          </font>
       </Label>
       <JFXTextField fx:id="txtCustomerName" disable="true" layoutX="164.0" layoutY="106.0" prefHeight="26.0" prefWidth="178.0" promptText="Customer Name" />
-      <JFXTextField disable="true" layoutX="453.0" layoutY="152.0" prefHeight="26.0" prefWidth="121.0" promptText="Unit Price" />
+      <JFXTextField fx:id="txtUnitPrice" disable="true" layoutX="453.0" layoutY="152.0" prefHeight="26.0" prefWidth="121.0" promptText="Unit Price" />
       <JFXTextField fx:id="txtAddress" disable="true" layoutX="385.0" layoutY="106.0" prefHeight="26.0" prefWidth="186.0" promptText="Address" />
       <JFXTextField fx:id="txtStock" disable="true" layoutX="321.0" layoutY="152.0" prefHeight="26.0" prefWidth="111.0" promptText="Stock" />
       <JFXTextField fx:id="txtDescription" disable="true" layoutX="164.0" layoutY="152.0" promptText="Description" />
@@ -35,7 +34,7 @@
       </TableView>
       <JFXComboBox fx:id="cmbCustomerID" layoutX="39.0" layoutY="106.0" prefHeight="26.0" prefWidth="91.0" promptText="Customer iD" />
       <JFXComboBox fx:id="cmbItemCode" layoutX="39.0" layoutY="152.0" prefHeight="26.0" prefWidth="91.0" promptText="Item Code" />
-      <JFXTextField fx:id="txtQTY" layoutX="164.0" layoutY="190.0" prefHeight="26.0" prefWidth="91.0" promptText="Stock" text="QTY" />
+      <JFXTextField fx:id="txtQTY" layoutX="164.0" layoutY="190.0" prefHeight="26.0" prefWidth="91.0" promptText="QTY" />
       <JFXButton layoutX="478.0" layoutY="190.0" onAction="#btnAddToCartOnAction" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #130a5b;" text="Add To Cart" textFill="WHITE">
          <font>
             <Font name="System Bold Italic" size="12.0" />
@@ -60,6 +59,11 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="txtQTY1" layoutX="46.0" layoutY="190.0" prefHeight="26.0" prefWidth="91.0" promptText="Stock" text="orderID" />
+      <JFXTextField fx:id="txtOrderID" layoutX="460.0" layoutY="25.0" prefHeight="26.0" prefWidth="91.0" promptText="orderID" style="-fx-background-color: white;" />
+      <JFXButton layoutX="361.0" layoutY="427.0" onAction="#btnCommitOnAction" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #130a5b;" text="Commit" textFill="WHITE">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </JFXButton>
    </children>
 </AnchorPane>
