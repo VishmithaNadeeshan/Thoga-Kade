@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardFormController">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#092d4e" height="482.0" layoutX="-1.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" width="213.0" />
+      <JFXButton layoutX="20.0" layoutY="176.0" onAction="#btnCustomerFormAction" style="-fx-background-color: White;" text="Customer Form">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="20.0" layoutY="235.0" onAction="#btnItemFormAction" prefHeight="44.0" prefWidth="171.0" style="-fx-background-color: White;" text="Item Form">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="20.0" layoutY="294.0" onAction="#btnOrderFormAction" prefHeight="44.0" prefWidth="171.0" style="-fx-background-color: White;" text="Order Form">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </JFXButton>
+      <AnchorPane fx:id="loadFormContent" layoutX="211.0" prefHeight="481.0" prefWidth="745.0">
+         <children>
+            <Text fill="#01093e" layoutX="228.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Whole Sale Store" wrappingWidth="308.2934265136719">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Text>
+            <Text fill="#aeb8fe" layoutX="145.0" layoutY="114.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage your customers ,Items and Orders with ease." wrappingWidth="441.0934143066406">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="197.0" fitWidth="209.0" layoutX="284.0" layoutY="142.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../Javafx/javafx-Thogakade/src/main/resources/img/logo-removebg-preview.png" />
+               </image>
+            </ImageView>
+            <Text fill="#aeb8fe" layoutX="244.0" layoutY="424.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Developed by Vishmitha Nadeeshan" wrappingWidth="308.2934265136719">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Text fill="#aeb8fe" layoutX="333.0" layoutY="449.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Version 1.0.0" wrappingWidth="106.69345092773438">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="176.0" fitWidth="237.0" layoutX="285.0" layoutY="169.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/logo-removebg-preview.png" />
+               </image>
+            </ImageView>
+         </children></AnchorPane>
+      <JFXButton layoutX="20.0" layoutY="353.0" onAction="#btnRegisterNewUserAction" prefHeight="44.0" prefWidth="171.0" style="-fx-background-color: White;" text="Register">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </JFXButton>
+      <Text fill="#aeb8fe" layoutX="34.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Whole Sale Store" wrappingWidth="149.09341430664062">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="80.0" fitWidth="70.0" layoutX="71.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../Javafx/javafx-Thogakade/src/main/resources/img/logo-removebg-preview.png" />
+         </image>
+      </ImageView>
+      <Text fill="#fffdfd" layoutX="42.0" layoutY="457.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thogakade@gmail.com" wrappingWidth="127.49340438842773" />
+      <ImageView fitHeight="98.0" fitWidth="107.0" layoutX="57.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/logo-removebg-preview.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

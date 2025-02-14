@@ -11,11 +11,8 @@ import lombok.ToString;
 @ToString
 
 public class Item {
-    private String itemCode;
-    private String itemDescription;
+    private String code;
+    private String discription;
     private Double unitPrice;
-    private Integer quantityOnHand;
-
-
-
+    private Integer stock;
 }

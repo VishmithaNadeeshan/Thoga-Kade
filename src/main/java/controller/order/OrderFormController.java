@@ -2,9 +2,11 @@ package controller.order;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+import controller.DashboardFormController;
 import controller.customer.CustomerController;
 import controller.item.ItemController;
 import db.DBConnection;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
@@ -12,10 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 import model.Customer;
@@ -28,138 +27,167 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static java.lang.String.format;
+
 public class OrderFormController implements Initializable {
 
-    public JFXTextField txtOrderID;
+    public JFXTextField txtOrderId;
     @FXML
-    private JFXComboBox cmbCustomerID;
+    private JFXComboBox cmbCustomerId;
 
     @FXML
     private JFXComboBox cmbItemCode;
 
     @FXML
-    private TableColumn<?, ?> colDescription;
+    private TableColumn colDiscription;
 
     @FXML
-    private TableColumn<?, ?> colItemCode;
+    private TableColumn colItemCode;
 
     @FXML
-    private TableColumn<?, ?> colQTY;
+    private TableColumn colQty;
 
     @FXML
-    private TableColumn<?, ?> colTotal;
+    private TableColumn colTotal;
 
     @FXML
-    private TableColumn<?, ?> colUnitPrice;
+    private TableColumn colUnitPrice;
 
     @FXML
     private Label lblDate;
 
     @FXML
+    private Label lblNetTotal;
+
+    @FXML
     private Label lblTime;
 
     @FXML
-    private Label lblTotal;
+    private TableView<CartTM> tbCart;
 
     @FXML
-    private TableView<CartTM> tblOredrDetails;
+    private TextField txtAddress;
 
     @FXML
-    private JFXTextField txtAddress;
+    private TextField txtDiscription;
 
     @FXML
-    private JFXTextField txtCustomerName;
+    private TextField txtName;
 
     @FXML
-    private JFXTextField txtDescription;
+    private JFXTextField txtQty;
 
     @FXML
-    private JFXTextField txtUnitPrice;
+    private TextField txtStock;
 
     @FXML
-    private JFXTextField txtQTY;
+    private TextField txtUnitPrice;
 
-    @FXML
-    private JFXTextField txtStock;
+    private void setDateAndTime() {
+        Date date = new Date();
+        SimpleDateFormat Dateformat = new SimpleDateFormat("yyyy-MM-dd");
+        String format = Dateformat.format(date);
+        lblDate.setText(format);
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            LocalTime now = LocalTime.now();
+            lblTime.setText(now.getHour()+":"+now.getMinute()+":"+now.getSecond());
+        }),
+                new KeyFrame(Duration.seconds(1))
+        );
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+
+    }
+
+    private void loadCustomersId() {
+        ObservableList<String> allCustomersId = new CustomerController().getAllCustomersId();
+        cmbCustomerId.setItems(allCustomersId);
+
+    }
+    
+    private void loadItemCode() {
+        cmbItemCode.setItems(new ItemController().getItem());
+    }
 
     ObservableList<CartTM> cartTMS = FXCollections.observableArrayList();
 
     @FXML
-    void btnAddToCartOnAction(ActionEvent event) {
-
-
+    void btnAddToCartAction(ActionEvent event) {
         String code = cmbItemCode.getValue().toString();
-        String description = txtDescription.getText();
+        String discription = txtDiscription.getText();
+        Integer qty = Integer.parseInt(txtQty.getText());
         Double unitPrice = Double.parseDouble(txtUnitPrice.getText());
-        Integer qty = Integer.parseInt(txtQTY.getText());
-        Double total = qty*unitPrice;
+        Double total = qty * unitPrice;
 
-       cartTMS.add(new CartTM(code, description, unitPrice, qty, total));
+        cartTMS.add(new CartTM(code, discription, qty, unitPrice, total));
 
-        tblOredrDetails.setItems(cartTMS);
+        tbCart.setItems(cartTMS);
 
-        calcNetTotal();
+        calTotal();
     }
 
+    private void calTotal() {
+        Double total = 0.0;
+        for (CartTM cartTM : tbCart.getItems()) {
+            total += cartTM.getTotal();
+        }
+        lblNetTotal.setText(total.toString());
+    }
     @FXML
-    void btnPlaceOrderOnAction(ActionEvent event) {
-        String orderID = txtOrderID.getText();
+    void btnPlaceOrderAction(ActionEvent event) throws SQLException {
+        String orderId = txtOrderId.getText();
         String date = lblDate.getText();
-        String customerId = cmbCustomerID.getValue().toString();
+        String customerId = cmbCustomerId.getValue().toString();
 
-        List<OrderDetail>orderDetails = new ArrayList<>();
+        List<OrderDetail> orderDetails = new ArrayList<>();
 
-        cartTMS.forEach(CartTM -> {
-           orderDetails.add(
-                   new OrderDetail(
-                           orderID,
-                           CartTM.getItemCode(),
-                           CartTM.getQuantityOnHand(),
-                           CartTM.getUnitPrice()
-
-                   )
-           );
+        cartTMS.forEach(cartTM -> {
+            orderDetails.add(
+            new OrderDetail(
+                    orderId,
+                    cartTM.getCode(),
+                    cartTM.getQty(),
+                    cartTM.getUnitPrice()
+            )
+            );
         });
 
-        Order order = new Order(orderID, date, customerId, orderDetails);
-        boolean b = false;
-        try {
-            b = new OrderController().placeOrder(order);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Order order = new Order(orderId, date, customerId, orderDetails);
 
-        if (b){
-            new Alert(Alert.AlertType.INFORMATION,"Order placed!").show();
-        }else {
-            new Alert(Alert.AlertType.ERROR,"Order not placed!").show();
+        if (new OrderController().placeOrder(order)) {
+            new Alert(Alert.AlertType.INFORMATION, "Order Placed", ButtonType.OK).show();
+
+        } else {
+            new Alert(Alert.AlertType.ERROR, "Order Not Placed", ButtonType.OK).show();
         }
 
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        colItemCode.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
-        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colItemCode.setCellValueFactory(new PropertyValueFactory<>("code"));
+        colDiscription.setCellValueFactory(new PropertyValueFactory<>("discription"));
+        colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
         colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
-        colQTY.setCellValueFactory(new PropertyValueFactory<>("quantityOnHand"));
         colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
 
-
         setDateAndTime();
-        loadCustomerIDs();
-        loadItemsCode();
+        loadCustomersId();
+        loadItemCode();
 
-        cmbCustomerID.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        cmbCustomerId.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                SearchCustomerData(newValue.toString());
+                searchCustomerData(newValue.toString());
             }
         });
+
         cmbItemCode.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 searchItemData(newValue.toString());
@@ -167,71 +195,23 @@ public class OrderFormController implements Initializable {
         });
     }
 
-    private void loadItemsCode() {
-        cmbItemCode.setItems(new ItemController().getItemCodes());
-    }
-
     private void searchItemData(String code) {
-       Item  item = new ItemController().searchItem(code);
-       txtStock.setText(item.getQuantityOnHand().toString());
-       txtDescription.setText(item.getItemDescription());
+       Item item = new ItemController().searchItem(code);
+       txtStock.setText(item.getStock().toString());
+       txtDiscription.setText(item.getDiscription());
        txtUnitPrice.setText(item.getUnitPrice().toString());
-
     }
 
-    private void SearchCustomerData(String customerId) {
-        Customer customer = new CustomerController().viewCustomer(customerId);
-        txtCustomerName.setText(customer.getName());
+    private void searchCustomerData(String newValue) {
+        Customer customer = new CustomerController().searchCustomer(newValue);
+
+        txtName.setText(customer.getName());
         txtAddress.setText(customer.getAddress());
     }
 
-    private void loadCustomerIDs() {
-        ObservableList<String> customerIDs = new CustomerController().getCustomerIDs();
-        cmbCustomerID.setItems(customerIDs);
-    }
-
-    private void setDateAndTime(){
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String format = dateFormat.format(date);
-        lblDate.setText(format);
-
-
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.ZERO,e ->{
-                    LocalDateTime now = LocalDateTime.now();
-                    lblTime.setText(now.getHour() + ":" + now.getMinute() + ":" + now.getSecond());
-                }),
-                new KeyFrame(Duration.seconds(1),e ->{})
-        );
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-    }
-
-    private void calcNetTotal(){
-
-        Double netTotal = 0.0;
-
-        for (CartTM tm : cartTMS){
-            netTotal += tm.getTotal();
-
-
-        }
-
-        lblTotal.setText(netTotal.toString());
-
-
-
-
-    }
-
-
-    public void btnCommitOnAction(ActionEvent actionEvent) {
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            connection.commit();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void btnCommitAction(ActionEvent actionEvent) throws SQLException {
+        Connection connection = DBConnection.getInstance().getConnection();
+        connection.commit();
     }
 }
+

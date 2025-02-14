@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @ToString
+
 public class User {
     private String username;
-    private String Email;
-    private String Password;
+    private String email;
+    private String password;
 }
